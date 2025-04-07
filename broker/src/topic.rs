@@ -1,12 +1,11 @@
-#[derive(Clone, Debug)]
 /// Represents a message in the broker
+#[derive(Clone, Debug)]
 pub struct Message {
     pub payload: String,
     pub offset: usize,
 }
-
-#[derive(Debug)]
 /// Represents a topic in the broker
+#[derive(Debug)]
 pub struct Topic {
     pub name: String,
     pub messages: Vec<Message>,
@@ -32,10 +31,12 @@ impl Topic {
         self.next_offset += 1;
     }
 
-    // Consume all messages from the topic
-    pub fn consume_all(&self) -> Vec<Message> {
-        self.messages.clone()
+    // Consume messages from the topic starting from the given offset
+    pub fn consume(&self, offset: usize) -> Vec<Message> {
+        self.messages
+            .iter()
+            .filter(|msg| msg.offset >= offset)
+            .cloned()
+            .collect()
     }
 }
-
-

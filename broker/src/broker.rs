@@ -1,9 +1,9 @@
+use log::{error, info};
 use std::collections::HashMap;
 use std::io::{BufRead, BufReader, Write};
 use std::net::{TcpListener, TcpStream};
 use std::sync::{Arc, Mutex};
 use std::thread;
-use log::{info, error};
 
 use crate::topic::Topic;
 
@@ -53,35 +53,66 @@ fn handle_client(stream: TcpStream, broker: Arc<Mutex<Broker>>) {
         let topic: &str = parts.next().unwrap_or("");
         let payload: &str = parts.next().unwrap_or("");
 
-        info!("[{}] Received command: {} {} {}", client_addr, command, topic, payload);
+        info!(
+            "[{}] Received command: {} {} {}",
+            client_addr, command, topic, payload
+        );
 
         // Match the command and perform the appropriate action
         match command.to_uppercase().as_str() {
             "PUBLISH" => {
+                if topic.is_empty() || payload.is_empty() {
+                    error!(
+                        "[{}] Invalid PUBLISH command: topic or payload missing",
+                        client_addr
+                    );
+                    if let Err(e) = writeln!(&stream, "Error: Invalid PUBLISH command") {
+                        error!(
+                            "[{}] Failed to send error message to client: {}",
+                            client_addr, e
+                        );
+                    }
+                    continue;
+                }
                 let mut broker: std::sync::MutexGuard<'_, Broker> = broker.lock().unwrap();
                 let topic_ref: Arc<Mutex<Topic>> = broker.get_or_create_topic(topic);
                 let mut topic: std::sync::MutexGuard<'_, Topic> = topic_ref.lock().unwrap();
                 topic.publish(payload.to_string());
-                info!("[{}] Published message to topic '{}': {}", client_addr, topic.name, payload);
+                info!(
+                    "[{}] Published message to topic '{}': {}",
+                    client_addr, topic.name, payload
+                );
             }
             "CONSUME" => {
+                let offset: usize = payload.parse().unwrap_or(0); // Default to 0 if parsing fails
                 let broker: std::sync::MutexGuard<'_, Broker> = broker.lock().unwrap();
                 if let Some(topic_ref) = broker.topics.get(topic) {
                     let topic: std::sync::MutexGuard<'_, Topic> = topic_ref.lock().unwrap();
-                    let messages: Vec<crate::topic::Message> = topic.consume_all();
+                    let messages: Vec<crate::topic::Message> = topic.consume(offset);
                     for msg in messages {
-                        if let Err(e) = writeln!(&stream, "[{}] {} {}", msg.offset, topic.name, msg.payload) {
+                        if let Err(e) =
+                            writeln!(&stream, "[{}] {} {}", msg.offset, topic.name, msg.payload)
+                        {
                             error!("[{}] Failed to send message to client: {}", client_addr, e);
                         }
                     }
-                    info!("[{}] Consumed messages from topic '{}'", client_addr, topic.name);
+                    info!(
+                        "[{}] Consumed messages from topic '{}' starting at offset {}",
+                        client_addr, topic.name, offset
+                    );
                 } else {
-                    error!("[{}] Topic '{}' not found for consumption", client_addr, topic);
+                    error!(
+                        "[{}] Topic '{}' not found for consumption",
+                        client_addr, topic
+                    );
                 }
             }
             _ => {
                 if let Err(e) = writeln!(&stream, "Unknown command") {
-                    error!("[{}] Failed to send error message to client: {}", client_addr, e);
+                    error!(
+                        "[{}] Failed to send error message to client: {}",
+                        client_addr, e
+                    );
                 }
                 error!("[{}] Unknown command received: {}", client_addr, command);
             }
