@@ -83,7 +83,7 @@ fn handle_client(stream: TcpStream, broker: Arc<Mutex<Broker>>) {
                     client_addr, topic.name, payload
                 );
             }
-            "CONSUME" => {
+            "SUBSCRIBE" => {
                 let offset: usize = payload.parse().unwrap_or(0); // Default to 0 if parsing fails
                 let broker: std::sync::MutexGuard<'_, Broker> = broker.lock().unwrap();
                 if let Some(topic_ref) = broker.topics.get(topic) {

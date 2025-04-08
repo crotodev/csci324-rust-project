@@ -57,7 +57,7 @@ impl Consumer {
 
         let topics: Vec<(String, u64)> = self.topics.iter().map(|(t, o)| (t.clone(), *o)).collect();
         for (topic, offset) in topics {
-            let command: String = format!("CONSUME {} {}\n", topic, offset);
+            let command: String = format!("SUBSCRIBE {} {}\n", topic, offset);
             self.stream.write_all(command.as_bytes()).map_err(|e| {
                 format!("Failed to send consume command for topic {}: {}", topic, e)
             })?;
