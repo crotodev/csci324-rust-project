@@ -3,9 +3,10 @@ use std::io::Write;
 use std::net::TcpStream;
 use std::time::Duration;
 
+/// This type alias represents a result that can either be a successful value of type T or an error
 type Result<T> = std::result::Result<T, Box<dyn Error + Send + Sync>>;
 
-// This struct represents a generic Producer that can send messages to a server.
+/// This struct represents a generic Producer that can send messages to a server.
 pub struct Producer {
     stream: TcpStream,
 }

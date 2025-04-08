@@ -1,4 +1,4 @@
-// Represents a message for the consumer
+/// Represents a message for the consumer
 #[derive(Debug)]
 #[allow(dead_code)]
 pub struct Message {

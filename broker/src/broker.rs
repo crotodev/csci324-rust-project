@@ -7,7 +7,7 @@ use std::thread;
 
 use crate::topic::Topic;
 
-// This module implements a simple message broker that allows clients to publish and consume messages on topics
+/// This struct represents a broker that manages multiple topics
 pub struct Broker {
     pub topics: HashMap<String, Arc<Mutex<Topic>>>,
 }
@@ -19,7 +19,7 @@ impl Broker {
         }
     }
 
-    // Returns an existing topic or creates a new one if it doesn't exist
+    /// Returns an existing topic or creates a new one if it doesn't exist
     pub fn get_or_create_topic(&mut self, topic: &str) -> Arc<Mutex<Topic>> {
         self.topics
             .entry(topic.to_string())
@@ -28,7 +28,7 @@ impl Broker {
     }
 }
 
-// Handles client connections, reading commands and interacting with the broker
+/// Handles client connections, reading commands and interacting with the broker
 fn handle_client(stream: TcpStream, broker: Arc<Mutex<Broker>>) {
     // Get client address
     let client_addr = match stream.peer_addr() {
@@ -121,7 +121,7 @@ fn handle_client(stream: TcpStream, broker: Arc<Mutex<Broker>>) {
     info!("[{}] Client disconnected", client_addr);
 }
 
-// Starts the broker and listens for incoming connections
+/// Starts the broker and listens for incoming connections
 pub fn start_broker(address: &str) {
     let broker: Arc<Mutex<Broker>> = Arc::new(Mutex::new(Broker::new()));
     let listener: TcpListener = TcpListener::bind(address).unwrap();

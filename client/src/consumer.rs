@@ -6,9 +6,10 @@ use std::time::Duration;
 
 use crate::message::Message;
 
+/// This type alias represents a result that can either be a successful value of type T or an error
 type Result<T> = std::result::Result<T, Box<dyn Error + Send + Sync>>;
 
-// This struct represents a generic Consumer that can receive messages from a server.
+/// This struct represents a generic Consumer that can receive messages from a server
 pub struct Consumer {
     stream: TcpStream,
     topics: HashMap<String, u64>,
@@ -25,14 +26,14 @@ impl Consumer {
         })
     }
 
-    /// Adds topics to the consumer. If a topic already exists, it will not be added again.
+    /// Adds topics to the consumer. If a topic already exists, it will not be added again
     pub fn add_topics(&mut self, topics: &[&str]) {
         for topic in topics {
             self.topics.insert(topic.to_string(), 0);
         }
     }
 
-    // Parses a message from the server response
+    /// Parses a message from the server response
     fn parse_message(line: &str) -> Option<Message> {
         // Extract the offset
         let offset_end: usize = line.find(']')?;
@@ -51,7 +52,7 @@ impl Consumer {
         })
     }
 
-    // Polls the server for messages
+    /// Polls the server for messages
     pub fn poll(&mut self) -> Result<Vec<Message>> {
         let mut messages: Vec<Message> = Vec::new();
 

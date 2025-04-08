@@ -21,7 +21,7 @@ impl Topic {
         }
     }
 
-    // Publish a message to the topic
+    /// Publish a message to the topic
     pub fn publish(&mut self, payload: String) {
         let msg: Message = Message {
             payload,
@@ -31,7 +31,7 @@ impl Topic {
         self.next_offset += 1;
     }
 
-    // Consume messages from the topic starting from the given offset
+    /// Consume messages from the topic starting from the given offset
     pub fn consume(&self, offset: usize) -> Vec<Message> {
         self.messages
             .iter()
