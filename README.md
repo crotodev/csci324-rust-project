@@ -19,7 +19,7 @@ csci324-rust-project/
 │       └── message.rs     # Defines message structure
 ```
 
-### 🧪 Building and Running
+### Building and Running
 
 #### 1. Start the Broker
 
@@ -46,10 +46,28 @@ cargo run -- produce test [n] # sends `n` test messages (default 100)
 #### 3. Run a Consumer
 
 ```bash
-cargo run -- consume 127.0.0.1:9092 my-topic
+cargo run -- consume 127.0.0.1:9092 topic
 ```
 
 The consumer connects to the broker and listens for messages on the specified topic.
+
+### Generating Documentation
+
+To get a basic overview of the functions and data structures in each module, you can generate and view the documentation using `cargo doc`. Follow these steps:
+
+#### 1. Generate and View Broker Documentation
+
+```bash
+cd broker
+cargo doc --open
+```
+
+#### 2. Generate and View Client Documentation
+
+```bash
+cd client
+cargo doc --open
+```
 
 ## Logging
 

@@ -1,3 +1,6 @@
+// This file contains logging functionality added by AI.
+// The logging is implemented using the `log` crate.
+
 use log::{error, info};
 use std::collections::HashMap;
 use std::io::{BufRead, BufReader, Write};
@@ -31,6 +34,7 @@ impl Broker {
 /// Handles client connections, reading commands and interacting with the broker
 fn handle_client(stream: TcpStream, broker: Arc<Mutex<Broker>>) {
     // Get client address
+    // Ref: https://stackoverflow.com/questions/63024046/how-to-access-the-peer-ip-address-in-tokio-tungstenite-0-10
     let client_addr = match stream.peer_addr() {
         Ok(addr) => addr.to_string(),
         Err(_) => "unknown".to_string(),
