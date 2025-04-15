@@ -26,7 +26,7 @@ Submitted Files
 -------------------------------------------------------------------------------
 
 File: broker/src/main.rs
-Description: Entry point for the broker application. Initializes the server and logger.
+Description: Starts broker application. Initializes the server and logger.
 Original or Copied: Original
 Modification Data: 15 lines
 
@@ -77,7 +77,7 @@ Submitted Files
 -------------------------------------------------------------------------------
 
 File: src/message.rs
-Description: Holds the core game logic and is the main entry point to start the game.
+Description: Holds the core game logic and game itself.
 Original or Copied: Original
 Unoriginal: 5 lines
 Original: 283 lines
