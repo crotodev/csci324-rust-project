@@ -40,7 +40,7 @@ fn handle_client(stream: TcpStream, broker: Arc<Mutex<Broker>>) {
         Err(_) => "unknown".to_string(),
     };
 
-    // Log the client connection
+    // Read message from client
     let reader: BufReader<&TcpStream> = BufReader::new(&stream);
     for line in reader.lines() {
         let line: String = match line {

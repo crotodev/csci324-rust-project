@@ -1,0 +1,89 @@
+Platform: macOS
+---------------------------------------------------------------------------------------------------------
+
+Term Project
+
+This project is implemented in Rust and includes two components: the message broker (server) 
+and a client that can act as either a producer or consumer.
+
+---------------------------------------------------------------------------------------------------------
+Installation
+---------------------------------------------------------------------------------------------------------
+1. Install Rust (if not already installed):
+   Visit https://www.rust-lang.org/tools/install and follow the installation instructions.
+   Alternatively, use the following command in your terminal if curl is installed:
+
+   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+2. After installation, verify Rust is installed:
+
+   rustc --version
+   cargo --version
+
+---------------------------------------------------------------------------------------------------------
+Execution
+---------------------------------------------------------------------------------------------------------
+1. Open a terminal and navigate to the `broker` directory:
+
+   cd broker
+
+2. Run the broker:
+
+   cargo build
+   cargo run -- 127.0.0.1:9092
+
+  You may run without arguments. It will default to `127.0.0.1:9092`.
+
+3. Open a new terminal window and navigate to the `client` directory:
+
+   cd client
+
+4. To run a producer and send messages to a topic:
+
+   cargo run -- produce 127.0.0.1:9092 topic 5
+
+   Or use the test shortcut:
+
+   cargo run -- produce test [n]
+
+   This sends `n` messages to "test-topic". You may run without `n`, and it will default to 100.
+
+5. To run a consumer and subscribe to a topic:
+
+   cargo run -- consume 127.0.0.1:9092 topic
+
+   The consumer will connect to the broker and print all messages it receives for the given topic.
+
+---------------------------------------------------------------------------------------------------------
+Notes
+---------------------------------------------------------------------------------------------------------
+- When producing messages, there's no way to customize message content without going in and changing the code.
+
+---------------------------------------------------------------------------------------------------------
+Rust Snowman
+
+This project is a terminal-based Snowman game written in Rust.
+
+---------------------------------------------------------------------------------------------------------
+Installation
+---------------------------------------------------------------------------------------------------------
+Perform the same steps as stated above.
+
+---------------------------------------------------------------------------------------------------------
+Execution
+---------------------------------------------------------------------------------------------------------
+1. Open a terminal window.
+
+2. Change to the project directory:
+
+   cd rust-snowman
+
+3. Build the project:
+
+   cargo build
+
+4. Run the game:
+
+   cargo run
+
+5. Follow the on-screen instructions to guess letters and try to win the game.
