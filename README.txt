@@ -68,16 +68,15 @@ CSCI 324 Rust Snowman
 Project Structure
 -------------------------------------------------------------------------------
 
-csci324-rust-project/
+rust-snowman/
 └── src/
     └── main.rs
-
 
 -------------------------------------------------------------------------------
 Submitted Files
 -------------------------------------------------------------------------------
 
-File: src/message.rs
+File: src/main.rs
 Description: Holds the core game logic and game itself.
 Original or Copied: Original
 Unoriginal: 5 lines
