@@ -71,7 +71,7 @@ Project Structure
 csci324-rust-project/
 ├── broker/
 │   └── src/
-│       ├── main.rs  
+│       └── main.rs  
 
 -------------------------------------------------------------------------------
 Submitted Files
