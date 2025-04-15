@@ -14,12 +14,12 @@ csci324-rust-project/
 │       ├── main.rs        
 │       ├── broker.rs      
 │       └── topic.rs       
-├── client/
-│   └── src/
-│       ├── main.rs        
-│       ├── producer.rs   
-│       ├── consumer.rs    
-│       └── message.rs    
+└── client/
+    └── src/
+        ├── main.rs        
+        ├── producer.rs   
+        ├── consumer.rs    
+        └── message.rs    
 
 -------------------------------------------------------------------------------
 Submitted Files
@@ -69,9 +69,9 @@ Project Structure
 -------------------------------------------------------------------------------
 
 csci324-rust-project/
-├── broker/
-│   └── src/
-│       └── main.rs  
+└── src/
+    └── main.rs
+
 
 -------------------------------------------------------------------------------
 Submitted Files
