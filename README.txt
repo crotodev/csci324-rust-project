@@ -1,12 +1,12 @@
-
-
 CSCI 324 Rust Term Project
 
 This project is a Rust-based message broker system implementing a basic publish-subscribe model over TCP. 
 It consists of two main components: a broker (server) and a client that can act as either a producer or consumer. 
 The system handles multiple concurrent client connections using threads and shares state safely via Arc<Mutex<>>.
 
+-------------------------------------------------------------------------------
 Project Structure
+-------------------------------------------------------------------------------
 
 csci324-rust-project/
 ├── broker/
@@ -62,10 +62,11 @@ Original or Copied: Original
 Modification Data: 8 lines
 
 -------------------------------------------------------------------------------
-
 CSCI 324 Rust Snowman
 
+-------------------------------------------------------------------------------
 Project Structure
+-------------------------------------------------------------------------------
 
 csci324-rust-project/
 ├── broker/
