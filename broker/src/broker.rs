@@ -102,7 +102,7 @@ fn handle_client(stream: TcpStream, broker: Arc<Mutex<Broker>>) {
                     );
                 } else {
                     error!(
-                        "[{}] Topic '{}' not found for consumption",
+                        "[{}] Topic '{}' not found",
                         client_addr, topic
                     );
                 }

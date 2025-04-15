@@ -1,4 +1,4 @@
-/// Represents a message in the broker
+/// Represents a message in a topic
 #[derive(Clone, Debug)]
 pub struct Message {
     pub payload: String,
