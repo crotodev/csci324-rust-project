@@ -1,6 +1,3 @@
-// This file contains logging functionality added by AI.
-// The logging is implemented using the `log` crate.
-
 use log::{error, info};
 use std::collections::HashMap;
 use std::io::{BufRead, BufReader, Write};
@@ -10,15 +7,23 @@ use std::thread;
 
 use crate::topic::Topic;
 
+// struct Consumer {
+//     pub stream: TcpStream,
+//     pub topics: Vec<String>,
+//     pub offset: usize,
+// }
+
 /// This struct represents a broker that manages multiple topics
 pub struct Broker {
     pub topics: HashMap<String, Arc<Mutex<Topic>>>,
+    // pub consumers: Vec<Arc<Mutex<Consumer>>>,
 }
 
 impl Broker {
     pub fn new() -> Self {
         Broker {
             topics: HashMap::new(),
+            // consumers: Vec::new(),
         }
     }
 
@@ -34,13 +39,12 @@ impl Broker {
 /// Handles client connections, reading commands and interacting with the broker
 fn handle_client(stream: TcpStream, broker: Arc<Mutex<Broker>>) {
     // Get client address
-    // Ref: https://stackoverflow.com/questions/63024046/how-to-access-the-peer-ip-address-in-tokio-tungstenite-0-10
-    let client_addr: String = match stream.peer_addr() {
+    let client_addr = match stream.peer_addr() {
         Ok(addr) => addr.to_string(),
         Err(_) => "unknown".to_string(),
     };
 
-    // Read message from client
+    // Log the client connection
     let reader: BufReader<&TcpStream> = BufReader::new(&stream);
     for line in reader.lines() {
         let line: String = match line {
@@ -89,27 +93,36 @@ fn handle_client(stream: TcpStream, broker: Arc<Mutex<Broker>>) {
             }
             "SUBSCRIBE" => {
                 let offset: usize = payload.parse().unwrap_or(0); // Default to 0 if parsing fails
-                let broker: std::sync::MutexGuard<'_, Broker> = broker.lock().unwrap();
-                if let Some(topic_ref) = broker.topics.get(topic) {
-                    let topic: std::sync::MutexGuard<'_, Topic> = topic_ref.lock().unwrap();
-                    let messages: Vec<crate::topic::Message> = topic.consume(offset);
-                    for msg in messages {
-                        if let Err(e) =
-                            writeln!(&stream, "[{}] {} {}", msg.offset, topic.name, msg.payload)
-                        {
-                            error!("[{}] Failed to send message to client: {}", client_addr, e);
-                        }
+                let messages: Vec<crate::topic::Message>;
+                let topic_name: String;
+
+                {
+                    let broker: std::sync::MutexGuard<'_, Broker> = broker.lock().unwrap();
+                    if let Some(topic_ref) = broker.topics.get(topic) {
+                        let topic: std::sync::MutexGuard<'_, Topic> = topic_ref.lock().unwrap();
+                        messages = topic.consume(offset);
+                        topic_name = topic.name.clone();
+                    } else {
+                        error!(
+                            "[{}] Topic '{}' not found for consumption",
+                            client_addr, topic
+                        );
+                        continue;
                     }
-                    info!(
-                        "[{}] Consumed messages from topic '{}' starting at offset {}",
-                        client_addr, topic.name, offset
-                    );
-                } else {
-                    error!(
-                        "[{}] Topic '{}' not found",
-                        client_addr, topic
-                    );
+                } 
+
+                // Send messages to the consumer
+                for msg in messages {
+                    if let Err(e) =
+                        writeln!(&stream, "[{}] {} {}", msg.offset, topic_name, msg.payload)
+                    {
+                        error!("[{}] Failed to send message to client: {}", client_addr, e);
+                    }
                 }
+                info!(
+                    "[{}] Consumed messages from topic '{}' starting at offset {}",
+                    client_addr, topic_name, offset
+                );
             }
             _ => {
                 if let Err(e) = writeln!(&stream, "Unknown command") {
